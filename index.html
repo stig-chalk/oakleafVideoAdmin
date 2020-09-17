@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Video List</title>
+	<style type="text/css">
+		.listMain,
+		.login {
+			display: flex;
+		}
+
+		.cell {
+			margin-right: 30px;
+		}
+	</style>
+</head>
+<body>
+	<div class="login">
+		Username: <input class="username" type='text'/>
+		Password: <input class="password" type="password"/>
+		<button class="loginSubmit">Login</button>
+	</div>
+	<div class="mainpage">
+		<p1> Video List </p1>
+		<button class="getList"> Get Video List </button>
+		<button class="logoutSubmit">Logout</button>
+		<div class="listMain">
+			<div class="cell">Username</div>
+			<div class="cell">Record Time</div>
+			<div class="cell">Download</div>
+			<br>
+			<div class="content"></div>
+		</div>
+	</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	$(".login").show();
+	$(".mainpage").hide();
+
+	function insertRow(data) {
+		let list = $(".content");
+		list.empty();
+		console.log(data);
+		// for (let i = 0; i < data.length; i++) {
+	 //        let row = "";
+	 //        let id = data[i]["id"];
+	 //        row += "<div class='cell'>" + data[i]["recordTime"] + 
+	 //        list.append(row);
+  //   	}
+	}
+
+	$(".getList").click(()=> {
+		$.ajax({
+		dataType: "json",
+        url: "http://localhost:9090/video/getList",
+        method: "GET",
+        xhrFields: {
+           withCredentials: true
+       },
+       crossDomain: true,
+
+        success: function (data) {
+            insertRow(data);
+        },
+        error: function (data) {
+            alert("fail" + data);
+        }
+        });
+	});
+
+	$(".loginSubmit").click(()=> {
+		let uname = $(".username").val();
+		let upass = $(".password").val();
+		$.ajax({
+			dataType: "json",
+        	url: "http://localhost:9090/user/login",
+        	method: "POST",
+        	data: {"username":uname, "password":upass},
+        	xhrFields: {
+           withCredentials: true
+       },
+       crossDomain: true,
+
+	        success: function (data) {
+	        	console.log(data);
+	            if (data["success"] && data["detail"]["userType"] === 1) {
+	            	console.log("Admin Logged In");
+	            	$(".login").hide();
+	            	$(".mainpage").show();
+	            };
+	        },
+	        error: function (data) {
+	            alert("fail" + data);
+	        }
+			});
+	});
+
+	$(".logoutSubmit").click(() => {
+		$.ajax({
+			url: "http://localhost:9090/user/logout",
+			method: "POST",
+			xhrFields: {
+           withCredentials: true
+       },
+       crossDomain: true,
+
+	        success: function (data) {
+	        	console.log("User Logged Out");
+	        	$(".content").empty();
+            	$(".login").show();
+				$(".mainpage").hide();
+	        },
+	        error: function (data) {
+	            alert("fail" + data);
+	        }
+		});
+	})
+</script>
+</html>
