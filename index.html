@@ -73,7 +73,7 @@
 		let upass = $(".password").val();
 		$.ajax({
 			dataType: "json",
-        	url: "http://localhost:9090/user/login",
+        	url: "http://101.37.78.56:9090/user/login",
         	method: "POST",
         	data: {"username":uname, "password":upass},
         	xhrFields: {
@@ -97,8 +97,9 @@
 
 	$(".logoutSubmit").click(() => {
 		$.ajax({
-			url: "http://localhost:9090/user/logout",
+			url: "http://101.37.78.56:9090/read/openBook",
 			method: "POST",
+			data:{"bookId":1},
 			xhrFields: {
            withCredentials: true
        },
